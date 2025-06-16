@@ -1,3 +1,6 @@
+// A struct should only have one reason to change.
+// If you modify a struct for more than one reason, it’s likely doing too much.
+
 package main
 
 import (
