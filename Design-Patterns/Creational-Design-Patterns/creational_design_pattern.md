@@ -25,3 +25,38 @@ u1 := User{"Mayank", "mayank@gmail.com", 25}
 u2 := User{"Amit", "", 0}
 u3 := User{"", "test@gmail.com", 30}
 ```
+
+Problems here - 
+- Hard to remember field order
+- Invalid users possible (empty name)
+- Creation logic repeated everywhere
+- If you add a new field → all code breaks
+
+**WITH Creational Pattern (Factory – Simple)**
+We centralize how User is created.
+
+Factory function - 
+```
+func NewUser(name, email string, age int) User {
+	if name == "" {
+		panic("name cannot be empty")
+	}
+	return User{
+		Name:  name,
+		Email: email,
+		Age:   age,
+	}
+}
+```
+
+Usage
+```
+u1 := NewUser("Mayank", "mayank@gmail.com", 25)
+u2 := NewUser("Amit", "", 0)
+```
+
+Benefits - 
+- Field order hidden
+- Validation in one place
+- Safer and cleaner
+- Easy to change later
