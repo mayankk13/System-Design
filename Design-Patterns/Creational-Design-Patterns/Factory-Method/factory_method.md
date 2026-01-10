@@ -1,0 +1,1 @@
+The Factory Method design pattern is a creational pattern that provides an interface for creating objects in a superclass, but allows subclasses to alter the type of objects that will be created. In Go, this is typically implemented using interfaces and functions that return the interface type
