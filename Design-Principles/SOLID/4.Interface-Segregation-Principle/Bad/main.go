@@ -1,36 +1,69 @@
+/*
+It states that Interface should be such that the client should NOT implement unnecessary function that
+they do not need.
+*/
+
 package main
 
 import "fmt"
 
-type BankAccount interface {
-	Deposit(amount float64)
-	Withdraw(amount float64)
-	RequestLoan(amount float64)
+type Worker interface {
+	Work()
+	Eat()
+	Sleep()
 }
 
-type FixedDepositAccount struct {
-	Balance float64
+type Human struct{}
+
+type Robot struct{}
+
+func (h Human) Work() {
+	fmt.Println("Human Working")
 }
 
-func (f *FixedDepositAccount) Deposit(amount float64) {
-	f.Balance += amount
-	fmt.Println("✅ FD: Deposit successful")
+func (h Human) Eat() {
+	fmt.Println("Human Eating")
 }
 
-func (f *FixedDepositAccount) Withdraw(amount float64) {
-	panic("❌ FD: Withdraw not allowed") // Bad: panic if someone calls it
+func (h Human) Sleep() {
+	fmt.Println("Human Sleeping")
 }
 
-func (f *FixedDepositAccount) RequestLoan(amount float64) {
-	panic("❌ FD: Loan not allowed") // Bad: panic again
+func (r Robot) Work() {
+	fmt.Println("Robot Working")
+}
+
+func (r Robot) Eat() {
+	panic("Robot cannot eat")
+}
+
+func (r Robot) Sleep() {
+	panic("Robot cannot sleep")
+}
+
+func StartWork(w Worker) {
+	w.Work()
+}
+
+func LuncBreak(w Worker) {
+	w.Eat()
+}
+
+func EndDay(w Worker) {
+	w.Sleep()
 }
 
 func main() {
-	account := &FixedDepositAccount{}
+	human := Human{}
+	robot := Robot{}
 
-	account.Deposit(5000)
+	fmt.Println("---- Human Day ----")
+	StartWork(human)
+	LuncBreak(human)
+	EndDay(human)
 
-	// These should NOT be accessible!
-	account.Withdraw(2000)
-	account.RequestLoan(40000)
+	fmt.Println("---- Robot Day ----")
+	StartWork(robot)
+	LuncBreak(robot)
+	EndDay(robot)
 }

@@ -2,73 +2,61 @@ package main
 
 import "fmt"
 
-// small, focus interfaces
-type Depositable interface {
-	Deposit(amount float64)
+type Worker interface {
+	Work()
 }
 
-type Withdrawable interface {
-	Withdraw(amount float64)
+type Eater interface {
+	Eat()
 }
 
-type LoanRequestable interface {
-	RequestLoan(amount float64)
+type Sleeper interface {
+	Sleep()
 }
 
-// --- Fixed deposit supports only deposit
-type FixedDepositAccount struct {
-	Balance float64
+type Human struct{}
+
+type Robot struct{}
+
+// HUman implements all
+func (h Human) Work() {
+	fmt.Println("Human is Working")
 }
 
-func (f *FixedDepositAccount) Deposit(amount float64) {
-	f.Balance += amount
-	fmt.Println("✅ FD: Deposit successful")
+func (h Human) Eat() {
+	fmt.Println("Human is Eating")
 }
 
-// --- Savings supports deposit, withdraw, and loan
-type SavingsAccount struct {
-	Balance float64
+func (h Human) Sleep() {
+	fmt.Println("Human is Sleeping")
 }
 
-func (s *SavingsAccount) Deposit(amount float64) {
-	s.Balance += amount
-	fmt.Println("✅ Savings: Deposit successful")
+// Robot implements only what it needs
+func (r Robot) Work() {
+	fmt.Println("Robot is working")
 }
 
-func (s *SavingsAccount) Withdraw(amount float64) {
-	s.Balance -= amount
-	fmt.Println("✅ Savings: Withdraw successful")
+func StartWork(w Worker) {
+	w.Work()
 }
 
-func (s *SavingsAccount) RequestLoan(amount float64) {
-	fmt.Println("✅ Savings: Loan request submitted")
+func LuncBreak(e Eater) {
+	e.Eat()
 }
 
-// --- Functions using only what they need
-
-func ProcessDeposit(d Depositable) {
-	d.Deposit(10000)
-}
-
-func ProcessWithdrawal(w Withdrawable) {
-	w.Withdraw(2000)
-}
-
-func ProcessLoanRequest(l LoanRequestable) {
-	l.RequestLoan(50000)
+func EndDay(s Sleeper) {
+	s.Sleep()
 }
 
 func main() {
-	fixed := &FixedDepositAccount{}
-	savings := &SavingsAccount{}
+	human := Human{}
+	robot := Robot{}
 
-	ProcessDeposit(fixed)   // ✅
-	ProcessDeposit(savings) // ✅
+	fmt.Println("--- Human Day ---")
+	StartWork(human)
+	LuncBreak(human)
+	EndDay(human)
 
-	ProcessWithdrawal(savings)  // ✅
-	ProcessLoanRequest(savings) // ✅
-
-	// ❌ Compile error if uncommented — and that's good
-	// ProcessWithdrawal(fixed)
-	// ProcessLoanRequest(fixed)
+	fmt.Println("--- Robot Day ---")
+	StartWork(robot)
 }

@@ -1,45 +1,87 @@
-// given array, arr := []int{11, -3, 5, 8, 12}
-// return the square of each number in accending order
-// output - [9, 25, 64, 110, 144]
-// using concurrency
-
 package main
 
-import (
-	"fmt"
-	"sort"
-	"sync"
-)
+import "fmt"
 
-func square(n int, res *[]int, wg *sync.WaitGroup, mu *sync.Mutex) {
-	defer wg.Done()
-	num := n * n
-	mu.Lock()
-	*res = append(*res, num)
-	mu.Unlock()
+type Node struct {
+	Val  int
+	Next *Node
 }
 
-func findSquare(arr []int) []int {
-	var wg sync.WaitGroup
-	var mu sync.Mutex
-	n := len(arr)
-	res := []int{}
+func newNode(data int) *Node {
+	return &Node{Val: data, Next: nil}
+}
 
-	for i := 0; i < n; i++ {
-		wg.Add(1)
-		go square(arr[i], &res, &wg, &mu)
+func reverse(head *Node) *Node {
+	curr := head
+	var prev *Node = nil
+	var next *Node = nil
+
+	for curr != nil {
+		next = curr.Next
+		curr.Next = prev
+		prev = curr
+		curr = next
 	}
-	wg.Wait()
-	return res
+
+	return prev
+}
+
+func isPalindrome(head *Node) bool {
+	slow := head
+	fast := head
+
+	for fast != nil && fast.Next != nil {
+		slow = slow.Next
+		fast = fast.Next.Next
+	}
+
+	tail := reverse(slow)
+
+	for head != nil && tail != nil {
+		if head.Val != tail.Val {
+			return false
+		}
+		head = head.Next
+		tail = tail.Next
+	}
+
+	return true
+}
+
+func insertAtEnd(head *Node, data int) *Node {
+	node := newNode(data)
+	if head == nil {
+		return node
+	}
+
+	curr := head
+	for curr.Next != nil {
+		curr = curr.Next
+	}
+
+	curr.Next = node
+	return head
+}
+
+func printList(head *Node) {
+	for head != nil {
+		fmt.Printf("%d ", head.Val)
+		head = head.Next
+	}
+	fmt.Println()
 }
 
 func main() {
-	arr := []int{11, -3, 5, 8, 12}
+	var head *Node = nil
 
-	res := findSquare(arr)
-	sort.Ints(res)
+	arr := []int{}
 
-	for i := range res {
-		fmt.Println(res[i])
+	for i := 0; i < len(arr); i++ {
+		head = insertAtEnd(head, arr[i])
 	}
+
+	printList(head)
+
+	res := isPalindrome(head)
+	fmt.Println(res)
 }
